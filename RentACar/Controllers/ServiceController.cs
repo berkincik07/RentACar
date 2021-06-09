@@ -188,14 +188,20 @@ namespace RentACar.Controllers
         [Route("api/listcustomer")]
         public List<CustomerModel> listCustomer()
         {
-            List<CustomerModel> customers = db.Customer.Select(x=> new CustomerModel() 
-            
-            { 
+            List<CustomerModel> customers = db.Customer.Select(x => new CustomerModel()
+
+            {
                 customerId = x.customerId,
                 customerBirthDate = x.customerBirthDate,
                 customerMail = x.customerMail,
-                customerName = x.customerName
-                
+                customerName = x.customerName,
+                customerCarCount = x.Rental.Count(),
+                customerPhoto = x.customerPhoto,
+                customerPassword = x.customerPassword,
+                customerUsername = x.customerUsername,
+                Admin = x.Admin
+
+
             }).ToList();
             return customers;
         }
@@ -210,7 +216,12 @@ namespace RentACar.Controllers
                 customerId = x.customerId,
                 customerBirthDate = x.customerBirthDate,
                 customerMail = x.customerMail,
-                customerName = x.customerName
+                customerName = x.customerName,
+                customerCarCount = x.Rental.Count(),
+                customerPhoto = x.customerPhoto,
+                customerUsername = x.customerUsername,
+                customerPassword = x.customerPassword,
+                Admin = x.Admin
 
             }).SingleOrDefault();
             return customer;
@@ -220,7 +231,7 @@ namespace RentACar.Controllers
         [Route("api/addcustomer")]
         public ResultModel addCustomer(CustomerModel model)
         {
-            if (db.Customer.Count(s=>s.customerId == model.customerMail) > 0)
+            if (db.Customer.Count(s=>s.customerMail == model.customerMail) > 0)
             {
                 result.success = false;
                 result.message = "Bu kullanıcı zaten sisteme kayıtlıdır.";
@@ -232,6 +243,11 @@ namespace RentACar.Controllers
             newCustomer.customerBirthDate = model.customerBirthDate;
             newCustomer.customerMail = model.customerMail;
             newCustomer.customerName = model.customerName;
+            newCustomer.customerPhoto = model.customerPhoto;
+            newCustomer.customerUsername = model.customerUsername;
+            newCustomer.customerPassword = model.customerPassword;
+            newCustomer.Admin = model.Admin;
+
             db.Customer.Add(newCustomer);
             db.SaveChanges();
 
@@ -256,6 +272,11 @@ namespace RentACar.Controllers
             customer.customerBirthDate = model.customerBirthDate;
             customer.customerMail = model.customerMail;
             customer.customerName = model.customerName;
+            customer.customerPhoto = model.customerPhoto;
+            customer.customerPassword = model.customerPassword;
+            customer.customerUsername = model.customerUsername;
+            customer.Admin = model.Admin;
+
             db.SaveChanges();
 
             result.success = true;
@@ -288,6 +309,46 @@ namespace RentACar.Controllers
             result.success = true;
             result.message = "Kullanıcı silindi.";
             return result;
+        }
+
+        [HttpPost]
+        [Route("api/updatecustomerphoto")]
+        public ResultModel UpdateCustomerPhoto(CustomerPhotoModel model)
+        {
+            Customer customer = db.Customer.Where(s => s.customerId == model.customerId).SingleOrDefault();
+            if(customer == null)
+            {
+                result.success = false;
+                result.message = "Müşteri Bulunamadı.";
+                return result;
+            }
+
+            if(customer.customerPhoto != "placeholder.png")
+            {
+                string path = System.Web.Hosting.HostingEnvironment.MapPath("~/Files/" + customer.customerPhoto);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+
+            string data = model.photoData;
+            string base64 = data.Substring(data.IndexOf(',') + 1);
+            base64 = base64.Trim('\0');
+            byte[] imgbytes = Convert.FromBase64String(base64);
+            string fileName = customer.customerName + model.photoExtension.Replace("image/",".");
+            using (var ms= new MemoryStream(imgbytes,0,imgbytes.Length))
+            {
+                Image img = Image.FromStream(ms,true);
+                img.Save(System.Web.Hosting.HostingEnvironment.MapPath("~/Files/" + fileName));
+            }
+            customer.customerPhoto = fileName;
+            db.SaveChanges();
+
+            result.success = true;
+            result.message = "Fotoğraf güncellendi.";
+            return result;
+
         }
         #endregion
 

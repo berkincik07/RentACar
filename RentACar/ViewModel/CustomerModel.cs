@@ -11,6 +11,14 @@ namespace RentACar.ViewModel
         public string customerName { get; set; }
 
         public System.DateTime customerBirthDate { get; set; }
+
         public string customerMail { get; set; }
+        public string customerPhoto { get; set; }
+
+        public string customerUsername { get; set; }
+
+        public int customerCarCount { get; set; }
+        public string customerPassword { get; set; }
+        public int Admin { get; set; }
     }
 }

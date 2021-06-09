@@ -24,7 +24,12 @@ namespace RentACar.Models
         public string customerName { get; set; }
         public System.DateTime customerBirthDate { get; set; }
         public string customerMail { get; set; }
-    
+        public string customerPhoto { get; set; }
+        public string customerPassword { get; set; }
+        public int Admin { get; set; }
+
+        public string customerUsername { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Rental> Rental { get; set; }
     }

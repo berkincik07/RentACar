@@ -24,6 +24,9 @@
           <Property Name="customerName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="customerBirthDate" Type="date" Nullable="false" />
           <Property Name="customerMail" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="customerPhoto" Type="nchar" MaxLength="50" />
+          <Property Name="customerPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="Admin" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Rental">
           <Key>
@@ -110,6 +113,9 @@
           <Property Name="customerBirthDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="customerMail" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Rental" Relationship="RentACarDbModel.FK_Rental_ToCustomer" FromRole="Customer" ToRole="Rental" />
+          <Property Name="customerPhoto" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="customerPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Admin" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Rental">
           <Key>
@@ -168,6 +174,9 @@
           <EntitySetMapping Name="Customer">
             <EntityTypeMapping TypeName="RentACarDbModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="Admin" ColumnName="Admin" />
+                <ScalarProperty Name="customerPassword" ColumnName="customerPassword" />
+                <ScalarProperty Name="customerPhoto" ColumnName="customerPhoto" />
                 <ScalarProperty Name="customerMail" ColumnName="customerMail" />
                 <ScalarProperty Name="customerBirthDate" ColumnName="customerBirthDate" />
                 <ScalarProperty Name="customerName" ColumnName="customerName" />
